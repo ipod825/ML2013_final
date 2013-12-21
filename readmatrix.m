@@ -1,26 +1,33 @@
-function [ ylist,xlist ] = readfile(filename)
+function [Y,X, height, width] = readmatrix(filename)
+% READFILE read from training data
+% [Y,X, height, width] = readfile(filename)
+%   Output:
+%   Y: labels array
+%   X: image sparse matrix
+%   height: height of image
+%   width: width of image
 
-if isempty(filename)
-	filename = '../testdata/ml2013final_train.dat';
+if nargin<1 || isempty(filename)
+    filename = './ml2013final_train.dat';
 end
 
-width = 105;
 height = 122;
-d = width*height;
-n = 2;
+width = 105;
+d = height*width;
+n = 10;
 
-ylist = zeros(n,1);
-xlist = sparse(n,d);
+Y = zeros(n,1);
+X = sparse(n,d);
 
 fd = fopen(filename);
 
 for i = 1:n
 	line = fgetl(fd);
 	splitline = strread(line, '%s');
-	ylist(i) = str2double(splitline{1});
+	Y(i) = str2double(splitline{1});
 	for j = 2:length(splitline)
 		data = sscanf(splitline{j}, '%f:%f');
-		xlist(i,data(1)) = data(2);
+		X(i,(data(1))) = data(2);
 	end
 end
 
