@@ -61,7 +61,7 @@ guidata(hObject, handles);
 
 % UIWAIT makes guidisplay wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
- handles.label={'Mouse','Bull','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Moncky','Dog','Pig'};
+ handles.label={'Mouse','Bull','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Moncky','Chicken','Dog','Pig'};
  handles.degree=0;
  handles.flipx=false;
 [handles.Y handles.X handles.imgh handles.imgw]=readmatrix('./ml2013final_train.dat');
@@ -69,7 +69,8 @@ guidata(hObject, handles);
 guidata(hObject,handles);
 set(handles.imgIndSlider,'value',1);
 set(handles.imgIndSlider,'Max',size(handles.Y,1));
-set(handles.imgIndSlider,'SliderStep',[0.1 0.11]);
+step=1/size(handles.Y,1);
+set(handles.imgIndSlider,'SliderStep',[step 5*step]);
 pushbutton1_Callback(hObject, eventdata, handles);
 
 % --- Outputs from this function are returned to the command line.
