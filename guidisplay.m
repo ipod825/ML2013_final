@@ -22,7 +22,7 @@ function varargout = guidisplay(varargin)
 
 % Edit the above text to modify the response to help guidisplay
 
-% Last Modified by GUIDE v2.5 21-Dec-2013 21:55:28
+% Last Modified by GUIDE v2.5 22-Dec-2013 00:34:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,14 +64,16 @@ guidata(hObject, handles);
  handles.label={'Mouse','Bull','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Moncky','Chicken','Dog','Pig'};
  handles.degree=0;
  handles.flipx=false;
-[handles.Y handles.X handles.imgh handles.imgw]=readmatrix('./ml2013final_train.dat');
+ ibeg=1;
+ iend=10;
+ handles.imgIndBeg=ibeg;
+ handles.imgIndEnd=iend;
+ 
+ set(handles.imgIndBegTxt,'String',num2str(ibeg));
+ set(handles.imgIndEndTxt,'String',num2str(iend));
+ guidata(hObject,handles);
+ readData(hObject, eventdata, handles);
 
-guidata(hObject,handles);
-set(handles.imgIndSlider,'value',1);
-set(handles.imgIndSlider,'Max',size(handles.Y,1));
-step=1/size(handles.Y,1);
-set(handles.imgIndSlider,'SliderStep',[step 5*step]);
-pushbutton1_Callback(hObject, eventdata, handles);
 
 % --- Outputs from this function are returned to the command line.
 function varargout = guidisplay_OutputFcn(hObject, eventdata, handles) 
@@ -82,18 +84,6 @@ function varargout = guidisplay_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
-
-
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-imgInd=str2double(get(handles.imgIndText,'String'));
-set(handles.imgIndSlider,'value',imgInd);
-handles.degree=0;
-guidata(hObject,handles);
-showTextImg(handles,imgInd);
 
 
 function imgIndText_Callback(hObject, eventdata, handles)
@@ -127,7 +117,7 @@ function imgIndSlider_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 imgInd=floor(get(hObject,'value'));
-set(handles.imgIndText,'String',num2str(imgInd));
+set(handles.imgIndText,'String',num2str(imgInd+handles.imgIndBeg-1));
 handles.degree=0;
 guidata(hObject,handles);
 showTextImg(handles,imgInd);
@@ -165,11 +155,78 @@ guidata(hObject,handles);
 showTextImg(handles);
 
 
+function imgIndBegTxt_Callback(hObject, eventdata, handles)
+% hObject    handle to imgIndBegTxt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of imgIndBegTxt as text
+%        str2double(get(hObject,'String')) returns contents of imgIndBegTxt as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function imgIndBegTxt_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to imgIndBegTxt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function imgIndEndTxt_Callback(hObject, eventdata, handles)
+% hObject    handle to imgIndEndTxt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of imgIndEndTxt as text
+%        str2double(get(hObject,'String')) returns contents of imgIndEndTxt as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function imgIndEndTxt_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to imgIndEndTxt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in reloadBtn.
+function reloadBtn_Callback(hObject, eventdata, handles)
+% hObject    handle to reloadBtn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.imgIndBeg=str2double(get(handles.imgIndBegTxt,'String'));
+handles.imgIndEnd=str2double(get(handles.imgIndEndTxt,'String'));
+guidata(hObject,handles);
+set(hObject,'Enable','off');
+readData(hObject, eventdata, handles);
+set(hObject,'Enable','on');
+
+function readData(hObject, eventdata, handles)
+    [handles.Y, handles.X, handles.imgh, handles.imgw]=readmatrix('./ml2013final_train.dat',handles.imgIndBeg,handles.imgIndEnd);
+    guidata(hObject,handles);
+    set(handles.imgIndSlider,'value',1);
+    set(handles.imgIndText,'String',num2str(handles.imgIndBeg));
+    set(handles.imgIndSlider,'Max',size(handles.Y,1));
+    step=1/size(handles.Y,1);
+    set(handles.imgIndSlider,'SliderStep',[step 5*step]);
+    handles.degree=0;
+    showTextImg(handles,num2str(handles.imgIndBeg));
+
 function showTextImg(handles, imgInd)    
     %axis(handles.textImg);
-    if nargin<2 || isempty(imgInd)
-        imgInd=str2double(get(handles.imgIndText,'String'));
-    end
+    imgInd=str2double(get(handles.imgIndText,'String'));
+    imgInd=imgInd-handles.imgIndBeg+1;
     img=handles.X(imgInd,:);
     img=reshape(img,handles.imgw,handles.imgh);
     img=full(img);
