@@ -4,7 +4,7 @@ function ret=normalizeImg(img)
 %ASAN(http://link.springer.com/chapter/10.1007%2F3-540-40063-X_55#page-1)
 %is implemented for better performance
     img=sparse2full(img);
-    img=toBorW(img);
+    img=binarize(img);
     h=size(img,1);
     w=size(img,2);
     for r=1:h
