@@ -220,7 +220,7 @@ function reloadBtn_Callback(hObject, eventdata, handles)
 end
 
 function readData(hObject, eventdata, handles)
-    [handles.Y, handles.X, handles.imgh, handles.imgw]=readmatrix('./ml2013final_train.dat',handles.imgIndBeg,handles.imgIndEnd);
+    [handles.Y, handles.X, handles.imgh, handles.imgw]=guireadmatrix('./ml2013final_train.dat',handles.imgIndBeg,handles.imgIndEnd);
     guidata(hObject,handles);
     set(handles.imgIndSlider,'value',1);
     set(handles.imgIndText,'String',num2str(handles.imgIndBeg));

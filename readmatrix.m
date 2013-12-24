@@ -1,38 +1,26 @@
-function [Y,X, height, width] = readmatrix(filename, nBeg, nEnd)
+function [Y,X, height, width] = readmatrix(nBeg, nEnd,filename)
 % READFILE read from training data
-% [Y,X, height, width] = readfile(filename)
+% [Y,X, height, width] = readfile(nBeg, nEnd,filename)
 %   Output:
 %   Y: labels array
 %   X: image sparse matrix
 %   height: height of image
 %   width: width of image
-setParameterDefault('filename','./ml2013final_train.dat');
-setParameterDefault('nBeg',1);
-setParameterDefault('nEnd',6144);
-    
-height = 122;
-width = 105;
-d = height*width;
-nMax=6144;
-n=nEnd-nBeg;
-Y = zeros(n,1);
-X = sparse(n,d);
 
-fd = fopen(filename);
+    setParameterDefault('filename','./mltrain_sparse.dat');
+    setParameterDefault('nBeg',1);
+    setParameterDefault('nEnd',6144);
+    fd = fopen(filename);
+    if(fd<0)
+        error('%s not found. Please execute "translate" first to get the converted file',filename);
+    end
 
-for i = 1:nMax
-    line = fgetl(fd);
-    if i<nBeg continue; end
-    if i>nEnd break; end
-    ind=i-nBeg+1;
-	splitline = strread(line, '%s');
-	Y(ind) = str2double(splitline{1});
-	for j = 2:length(splitline)
-		data = sscanf(splitline{j}, '%f:%f');
-		X(ind,(data(1))) = data(2);
-	end
-end
-
-fclose(fd);
-
+    height = 122;
+    width = 105;
+    d = height*width;
+    n=nEnd-nBeg+1;
+    data=dlmread(filename);
+    data=sparse(data(:,1),data(:,2),data(:,3),n,d+1);
+    Y = data(nBeg:nEnd,1);
+    X = data(nBeg:nEnd,2:end);
 end
