@@ -61,18 +61,22 @@ function guidisplay_OpeningFcn(hObject, eventdata, handles, varargin)
 
     % UIWAIT makes guidisplay wait for user response (see UIRESUME)
     % uiwait(handles.figure1);
-     handles.label={'Mouse','Bull','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Moncky','Chicken','Dog','Pig'};
-     handles.degree=0;
-     handles.flipx=false;
-     ibeg=1;
-     iend=10;
-     handles.imgIndBeg=ibeg;
-     handles.imgIndEnd=iend;
+    global height width 
+	GLOBALVAR;
+    handles.label={'Mouse','Bull','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Moncky','Chicken','Dog','Pig'};
+    handles.degree=0;
+    handles.flipx=false;
+    ibeg=1;
+    iend=10;
+    handles.imgIndBeg=ibeg;
+    handles.imgIndEnd=iend;
+    handles.imgh = height;
+    handles.imgw = width;
 
-     set(handles.imgIndBegTxt,'String',num2str(ibeg));
-     set(handles.imgIndEndTxt,'String',num2str(iend));
-     guidata(hObject,handles);
-     readData(hObject, eventdata, handles);
+    set(handles.imgIndBegTxt,'String',num2str(ibeg));
+    set(handles.imgIndEndTxt,'String',num2str(iend));
+    guidata(hObject,handles);
+    readData(hObject, eventdata, handles);
 end
 
 % --- Outputs from this function are returned to the command line.
@@ -220,7 +224,7 @@ function reloadBtn_Callback(hObject, eventdata, handles)
 end
 
 function readData(hObject, eventdata, handles)
-    [handles.Y, handles.X, handles.imgh, handles.imgw]=guireadmatrix('./ml2013final_train.dat',handles.imgIndBeg,handles.imgIndEnd);
+    [handles.Y, handles.X]=guireadmatrix('./ml2013final_train.dat',handles.imgIndBeg,handles.imgIndEnd);
     guidata(hObject,handles);
     set(handles.imgIndSlider,'value',1);
     set(handles.imgIndText,'String',num2str(handles.imgIndBeg));

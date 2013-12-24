@@ -1,13 +1,21 @@
-height = 122;
-width = 105;
+%Thie function translate the original data format to a file with format
+%which is more easy to parse.
+%The new format is a sparse matrix in tthe form of [Y X], where Y is the
+%label and X is the raw image pixel grayscale value.
+%For more information, please check readmatrix.m.
+global height width n
+GLOBALVAR;
+
 d = height*width;
-nMax=6144;
 
 fd = fopen('./ml2013final_train.dat');
 ofd = fopen('mltrain_sparse.dat','w');
 
-for i = 1:nMax
+for i = 1:n
     line = fgetl(fd);
+    if(line==-1)
+        break;
+    end
     ind=i;
 	splitline = strread(line, '%s');
     data_dump=[ind, 1, str2double(splitline{1})];

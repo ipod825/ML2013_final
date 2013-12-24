@@ -1,22 +1,23 @@
-function [Y,X, height, width] = readmatrix(filename, nBeg, nEnd)
-% READFILE read from training data
-% [Y,X, height, width] = readfile(filename)
+function [Y,X] = guireadmatrix(filename, nBeg, nEnd)
+% GUIREADMATRIX read partial data from the training file
+% [Y,X] = guireadmatrix(filename)
 %   Output:
 %   Y: labels array
 %   X: image sparse matrix
-%   height: height of image
-%   width: width of image
+
+global height width n
+GLOBALVAR;
+
+
 setParameterDefault('filename','./ml2013final_train.dat');
 setParameterDefault('nBeg',1);
-setParameterDefault('nEnd',6144);
+setParameterDefault('nEnd',n);
     
-height = 122;
-width = 105;
 d = height*width;
-nMax=6144;
-n=nEnd-nBeg;
-Y = zeros(n,1);
-X = sparse(n,d);
+nMax=n;
+N=nEnd-nBeg+1;
+Y = zeros(N,1);
+X = sparse(N,d);
 
 fd = fopen(filename);
 
