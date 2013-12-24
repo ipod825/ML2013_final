@@ -1,8 +1,7 @@
-function ret=normalizeImg(img)
-%NORMALIZEIMAGE normalize the input image, the new dimension is
-%min(original height, original width). 
-%ASAN(http://link.springer.com/chapter/10.1007%2F3-540-40063-X_55#page-1)
-%is implemented for better performance
+function ret=normalizeImg(img,normSideLength)
+%NORMALIZEIMAGE normalize the input image. The sidelength of the normalized image is set to 64(default).
+%ASAN(http://link.springer.com/chapter/10.1007%2F3-540-40063-X_55#page-1) is implemented for better performance
+    setParameterDefault('normSideLength',64);
     img=sparse2full(img);
     img=binarize(img);
     h=size(img,1);
@@ -32,7 +31,6 @@ function ret=normalizeImg(img)
         Rori=Wori/Hori;
     end
    
-    normSideLength=min(w,h); %normalize image have side length equal to min(w,h)
     Rnorm=sqrt(sin(pi*Rori/2));
     Wnorm=normSideLength;
     Hnorm=normSideLength;
