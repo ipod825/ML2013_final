@@ -4,7 +4,6 @@ function translate(trainOrTest)
 %The new format is a sparse matrix in the form of [Y X], where Y is the label and X is the raw image pixel grayscale value.
 %For more information, please check readmatrix.m.
     
-    setParameterDefault('trainOrTest','true');
     global height width isTraining dataFname n rawdataFName
     isTraining=trainOrTest;
     GLOBALVAR;

@@ -1,12 +1,12 @@
 function [Y,X] = readmatrix(filename, n, height, width)
-% READMATRIX read all data from the training file
+% READMATRIX read all data from the normalized image file
 % [Y,X] = readmatrix(filename)
 %   Output:
 %   Y: labels array
 %   X: image sparse matrix
     fd = fopen(filename);
     if(fd<0)
-        error('%s not found. Please execute "translate" first to get the converted file',filename);
+        error('%s not found. Please execute "preprocessing" or "translate" first to get the normalized image file',filename);
     end
 
     d = height*width;

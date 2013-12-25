@@ -1,15 +1,8 @@
-global height width categNum normSideLength isTraining dataFname n 
+global categNum normSideLength isTraining featureFname n 
 isTraining=true;
 GLOBALVAR;
-
-[Y,X]=readmatrix(dataFname,n,height,width);
-Xnorm=cell(n,1);
-h = waitbar(0,'Normalization...');
-for i=1:n
-    Xnorm{i,1}=normalizeImg(X(i,:),normSideLength);
-    waitbar(i / n);
-end
-close(h);
+[Y, X]=readmatrix(featureFname,n,normSideLength,normSideLength);
+X=full(X);
 
 clear fe; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.
 fe=DEFeatureExtracter(normSideLength,categNum);
@@ -17,7 +10,8 @@ fe=DEFeatureExtracter(normSideLength,categNum);
 F=zeros(n,fe.d);
 h = waitbar(0,'Feature Extraction...');
 for i=1:n
-    F(i,:)=fe.extract(Y(i),Xnorm{i});
+    img=reshape(X(i,:),normSideLength,normSideLength);
+    F(i,:)=fe.extract(Y(i),img);
     waitbar(i / n);
 end
 close(h);
