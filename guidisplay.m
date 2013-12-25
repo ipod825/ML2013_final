@@ -61,10 +61,12 @@ function guidisplay_OpeningFcn(hObject, eventdata, handles, varargin)
 
     % UIWAIT makes guidisplay wait for user response (see UIRESUME)
     % uiwait(handles.figure1);
-    global height width 
-	GLOBALVAR;
+    global height width isTraining rawdataFName
+    isTraining=varargin{1};
+    GLOBALVAR;
     handles.label={'Mouse','Bull','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Moncky','Chicken','Dog','Pig'};
     handles.degree=0;
+    handles.fname=rawdataFName;
     handles.flipx=false;
     ibeg=1;
     iend=10;
@@ -224,7 +226,7 @@ function reloadBtn_Callback(hObject, eventdata, handles)
 end
 
 function readData(hObject, eventdata, handles)
-    [handles.Y, handles.X]=guireadmatrix('./ml2013final_train.dat',handles.imgIndBeg,handles.imgIndEnd);
+    [handles.Y, handles.X]=guireadmatrix(handles.fname,handles.imgIndBeg,handles.imgIndEnd);
     guidata(hObject,handles);
     set(handles.imgIndSlider,'value',1);
     set(handles.imgIndText,'String',num2str(handles.imgIndBeg));
@@ -250,7 +252,11 @@ function showTextImg(handles, imgInd)
     img=flipdim(imrotate(img,deg),1);
     
     imshow(img);
-    set(handles.imgLabel,'String',handles.label{handles.Y(imgInd)});
+    if(handles.Y(imgInd)<1)
+        set(handles.imgLabel,'String','?');
+    else
+        set(handles.imgLabel,'String',handles.label{handles.Y(imgInd)});
+    end
 end
 
 % --- Executes on button press in normCheck.

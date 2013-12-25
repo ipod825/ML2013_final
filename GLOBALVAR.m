@@ -3,9 +3,19 @@
 % global height width .... %<- declare global variables you need 
 % GLOBALVAR; %<-initialzie the variables
 
-global height width n categoryNum normSideLength
+global height width categNum normSideLength isTraining dataFname n rawdataFName
 height = 122;
 width = 105;
-n=6133;
-categoryNum=12;
+categNum=12;
 normSideLength=64;
+
+%isTraining should be set by main program
+if(isTraining)
+    n=6133;    
+    dataFname='./mltrain_sparse.dat';
+    rawdataFName='./ml2013final_train.dat';
+else
+    n=3072;
+    dataFname='./mltest_sparse.dat';
+    rawdataFName='./test1.dat';
+end

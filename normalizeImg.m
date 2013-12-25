@@ -6,6 +6,8 @@ function ret=normalizeImg(img,normSideLength)
     img=binarize(img);
     h=size(img,1);
     w=size(img,2);
+    ret=zeros(normSideLength);
+    top=0;bottom=0;left=0;right=0;
     for r=1:h
         if(~isempty(find(img(r,:), 1))) top=r; break; end
     end
@@ -19,6 +21,9 @@ function ret=normalizeImg(img,normSideLength)
         if(~isempty(find(img(:,c), 1))) right=c; break; end
     end
     
+    if(top==0 || bottom==0 || left==0 || right==0)
+        return;
+    end
     %ori is the crop image of img
     Wori=right-left+1;
     Hori=bottom-top+1;
@@ -45,7 +50,7 @@ function ret=normalizeImg(img,normSideLength)
         hoffset=floor((normSideLength-Wnorm)/2)
     end
     
-    ret=zeros(normSideLength);
+    
     for r=1:Hnorm
         for c=1:Wnorm
             rori=ceil(Hori*(r/Hnorm));

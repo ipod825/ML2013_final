@@ -5,11 +5,9 @@ function [Y,X] = guireadmatrix(filename, nBeg, nEnd)
 %   Y: labels array
 %   X: image sparse matrix
 
-global height width n
+global height width n 
 GLOBALVAR;
 
-
-setParameterDefault('filename','./ml2013final_train.dat');
 setParameterDefault('nBeg',1);
 setParameterDefault('nEnd',n);
     
