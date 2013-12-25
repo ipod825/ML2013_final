@@ -33,4 +33,4 @@ for i=1:size(pred,1)
     waitbar(i/n);
 end
 close(h);
-save('pred.txt','pred');
+dlmwrite('pred.txt',pred)
