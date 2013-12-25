@@ -11,6 +11,9 @@ function translate(trainOrTest)
     d = height*width;
     fd = fopen(rawdataFName);
     ofd = fopen(dataFname,'w');
+    if(fd<0)
+        error('You miss %s, please move it to the current directory.',rawdataFName);
+    end
 
     for i = 1:n-1
         line = fgetl(fd);
