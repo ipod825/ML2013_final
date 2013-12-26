@@ -11,7 +11,7 @@ normSideLength=64;
 
 %isTraining should be set by main program
 if(isTraining)
-    n=6133;    
+    n=6132;    
     dataFname='./mltrain_sparse.dat';
     featureFname='./featuretrain.dat';
     rawdataFName='./ml2013final_train.dat';
