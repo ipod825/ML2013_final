@@ -4,10 +4,21 @@
 % GLOBALVAR; %<-initialzie the variables
 
 global height width categNum normSideLength isTraining dataFname n rawdataFName featureFname
+global gamma C pcdim
 height = 122;
 width = 105;
 categNum=12;
+
+
+%tunning
+%% Normalization
 normSideLength=64;
+%% SVM
+gamma=0.1;
+C=0.1;
+%% PCA
+pcdim=200;
+%%
 
 %isTraining should be set by main program
 if(isTraining)
