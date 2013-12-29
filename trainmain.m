@@ -1,30 +1,58 @@
 global categNum normSideLength isTraining featureFname n 
 isTraining=true;
 GLOBALVAR;
-[Y, X]=readmatrix(featureFname,n,normSideLength,normSideLength);
-X=full(X);
 
-clear fe; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.
-fe=DEFeatureExtracter(normSideLength,categNum);
 
-F=zeros(n,fe.d);
-h = waitbar(0,'Feature Extraction...');
-for i=1:n
-    img=reshape(X(i,:),normSideLength,normSideLength);
-    F(i,:)=fe.extract(Y(i),img);
-    waitbar(i / n);
+if(~exist('cache','var'))
+    cache=zeros(1,2);
 end
-close(h);
-% dlmwrite('trainFeature.mat',F)
-% dlmwrite('trainLabel.mat',Y)
-% F=dlmread('trainFeature.mat');
-% Y=dlmread('trainLabel.mat');
+
+if(~cache(1,1))
+    [Y, X]=readmatrix(featureFname,n,normSideLength,normSideLength);
+    X=full(X);
+    cache(1,1)=true;
+end
+
+    FE=2;
+if(~cache(1,2))
+    clear fe; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.
+    switch(FE)
+        case 1
+            fe=DEFeatureExtracter(normSideLength,categNum);
+        case 2
+            pcafortrain=true;
+            try %test
+                eigenVec=dlmread('PCAEigenVecs.mat');
+                fe=EigeneatureExtracter(floor(normSideLength*normSideLength/20),eigenVec);
+                pcafortrain=false;
+            catch e %train
+                fe=EigenFeatureExtracter(floor(normSideLength*normSideLength/20),[]);
+            end
+    end
+    F=fe.extract(X);
+    if(pcafortrain)
+        dlmwrite('PCAEigenVecs.mat',fe.eigenVec);
+    end
+    
+    cache(1,2)=true;
+end
+
 
 clear cls; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.
-cls=AMDClassifier(size(F,2),categNum);
+
+CLS=2;
+switch(CLS)
+    case 1
+       cls=AMDClassifier(size(F,2),categNum);
+    case 2
+       cls=SVMClassifier(size(F,2),categNum);
+end
+
+
+
 cls.train(Y,F);
-cls=cls.saveobj;
-save('cls.mat','cls');
+classifier=cls.saveobj;
+save('classifier.mat','classifier');
 
 
 %below for cross validation

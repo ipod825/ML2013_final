@@ -1,4 +1,4 @@
-function [Y,X] = guireadmatrix(filename, nBeg, nEnd)
+function [Y,X] = guireadmatrix(filename, nBeg, nEnd, only)
 % GUIREADMATRIX read partial data from the training file
 % [Y,X] = guireadmatrix(filename)
 %   Output:
@@ -10,6 +10,7 @@ GLOBALVAR;
 
 setParameterDefault('nBeg',1);
 setParameterDefault('nEnd',n);
+setParameterDefault('only',-1);
     
 d = height*width;
 nMax=n;
@@ -18,6 +19,7 @@ Y = zeros(N,1);
 X = sparse(N,d);
 
 fd = fopen(filename);
+
 
 for i = 1:nMax
     line = fgetl(fd);
@@ -30,6 +32,12 @@ for i = 1:nMax
 		data = sscanf(splitline{j}, '%f:%f');
 		X(ind,(data(1))) = data(2);
 	end
+end
+
+if(only>0)
+    inds=find(Y==only);
+    Y=Y(inds);
+    X=X(inds,:);
 end
 
 fclose(fd);

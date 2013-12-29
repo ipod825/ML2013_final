@@ -22,7 +22,7 @@ function varargout = guidisplay(varargin)
 
 % Edit the above text to modify the response to help guidisplay
 
-% Last Modified by GUIDE v2.5 23-Dec-2013 01:38:35
+% Last Modified by GUIDE v2.5 29-Dec-2013 14:05:01
 
 % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -62,7 +62,11 @@ function guidisplay_OpeningFcn(hObject, eventdata, handles, varargin)
     % UIWAIT makes guidisplay wait for user response (see UIRESUME)
     % uiwait(handles.figure1);
     global height width isTraining rawdataFName
-    isTraining=varargin{1};
+    if(size(varargin,1)<1)
+        isTraining=true;
+    else
+        isTraining=varargin{1};
+    end
     GLOBALVAR;
     handles.label={'Mouse','Bull','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Moncky','Chicken','Dog','Pig'};
     handles.degree=0;
@@ -74,6 +78,7 @@ function guidisplay_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.imgIndEnd=iend;
     handles.imgh = height;
     handles.imgw = width;
+    handles.only=-1;
 
     set(handles.imgIndBegTxt,'String',num2str(ibeg));
     set(handles.imgIndEndTxt,'String',num2str(iend));
@@ -226,7 +231,8 @@ function reloadBtn_Callback(hObject, eventdata, handles)
 end
 
 function readData(hObject, eventdata, handles)
-    [handles.Y, handles.X]=guireadmatrix(handles.fname,handles.imgIndBeg,handles.imgIndEnd);
+    only=str2num(get(handles.onlyText,'String'));
+    [handles.Y, handles.X]=guireadmatrix(handles.fname,handles.imgIndBeg,handles.imgIndEnd,only);
     guidata(hObject,handles);
     set(handles.imgIndSlider,'value',1);
     set(handles.imgIndText,'String',num2str(handles.imgIndBeg));
@@ -248,8 +254,10 @@ function showTextImg(handles, imgInd)
         img=normalizeImg(img);
     end
     a=handles.degree;
-    deg=handles.degree*90;
-    img=flipdim(imrotate(img,deg),1);
+%     deg=handles.degree*90;
+    deg=90;
+%     img=imrotate(img,deg);
+%     img=flipdim(img,1);
     
     imshow(img);
     if(handles.Y(imgInd)<1)
@@ -267,4 +275,28 @@ function normCheck_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of normCheck
     showTextImg(handles);
+end
+
+
+
+function onlyText_Callback(hObject, eventdata, handles)
+% hObject    handle to onlyText (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of onlyText as text
+%        str2double(get(hObject,'String')) returns contents of onlyText as a double
+end
+
+% --- Executes during object creation, after setting all properties.
+function onlyText_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to onlyText (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
 end

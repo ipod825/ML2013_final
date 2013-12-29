@@ -14,5 +14,7 @@ function [Y,X] = readmatrix(filename, n, height, width)
     data=sparse(data(:,1),data(:,2),data(:,3),n,d+1);
     Y = full(data(:,1));
     X = data(:,2:end);
+    Y=Y(1:n);
+    X=X(1:n,:);
     fclose(fd);
 end

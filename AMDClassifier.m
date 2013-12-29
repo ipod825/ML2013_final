@@ -25,7 +25,11 @@ methods
 %             D(D>-10^-4 & D<10^-4)=0;
             this.eigenVec(c,:,:)=V;
             quasiMu=zeros(1,this.d);
-            D(D<0)=10^-20; %keep eigen value>0 since it is semi-definite
+            aa=find(D<0);
+            if(~isempty(aa))
+                warning('D<0');
+            end
+%             D(D<0)=10^-20; %keep eigen value>0 since it is semi-definite
             for i=1:this.d
                 evi=V(:,i);
                 thred=3*sqrt(D(i,i));
@@ -46,7 +50,7 @@ methods
         end
     end
 
-    function categ=classify(this,f)
+    function categ=classifyOne(this,f)
         distance=zeros(1,this.categNum);
         
         for c=1:this.categNum

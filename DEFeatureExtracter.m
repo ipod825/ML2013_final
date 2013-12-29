@@ -15,17 +15,20 @@ methods
         this.winLen=2*sideLen/8;
         this.halfWinLen=sideLen/8;
         this.offStep=this.halfWinLen/4;
-        this.sideLen=sideLen+this.winLen;
+        this.sideLen=sideLen;%+this.winLen;
         this.winNum=((this.sideLen-this.halfWinLen)/this.halfWinLen)^2;
         this.d=this.winNum*4;
         this.categNum=categNum;
     end
     
-    function f=extract(this,y,x)
-        x=this.padding(x,size(x,1)+4);
-%         x=edge(x,'log');
-        x=this.contour(x);
-        x=this.padding(x,this.sideLen);
+    function f=extractOne(this,x)
+        global normSideLength
+        GLOBALVAR;
+        x=reshape(x,normSideLength,normSideLength);
+%         x=this.padding(x,size(x,1)+4);
+        x=edge(x,'log');
+%         x=this.contour(x);
+%         x=this.padding(x,this.sideLen);
 %             imshow(x);
         dirMatrix=this.calcDirection(x);
         f=this.constructFeatureVector(dirMatrix);
@@ -34,19 +37,18 @@ methods
     function f=constructFeatureVector(this,dirM)
         winBegs=1:this.halfWinLen:size(dirM,2)-this.winLen+1;
         winInd=1;
-        winScore=zeros(this.winNum,4);
+        winScore=zeros(4,this.winNum);
         for top=winBegs
             bottom=top+this.winLen-1;
             for left=winBegs
                 right=left+this.winLen-1;
 
                 for d=1:4               %different direction
-                    score=0;
                     lastScore=0;
                     offset=3*this.offStep;
                     for s=4:-1:1       %different sub-area
                         score=sum(sum(dirM(d,top+offset:bottom-offset,left+offset:right-offset)));
-                        winScore(winInd,d)=winScore(winInd,d)+s*(score-lastScore);
+                        winScore(d,winInd)=winScore(d,winInd)+s*(score-lastScore);
                         lastScore=score;
                         offset=offset-this.offStep;
                     end
