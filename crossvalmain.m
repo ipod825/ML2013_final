@@ -1,4 +1,4 @@
-global categNum normSideLength isTraining featureFname n 
+global categNum normSideLength isTraining featureFname n eigenValThred
 isTraining=true;
 GLOBALVAR;
 
@@ -18,7 +18,7 @@ switch(FE)
     case 1
         fe=DEFeatureExtracter(normSideLength,categNum);
     case 2
-        fe=EigenFeatureExtracter(floor(normSideLength*normSideLength/20),[]);
+        fe=EigenFeatureExtracter(eigenValThred,[]);
 end
 if(~isTraining)
     load 'featureextracter.mat';

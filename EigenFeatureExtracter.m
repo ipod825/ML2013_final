@@ -1,6 +1,7 @@
 classdef EigenFeatureExtracter < FeatureExtracter
     properties (SetAccess = public)
         pcdim;
+        eigenValueSumThred;
         eigenVec;
         mVec;
     end
@@ -9,24 +10,36 @@ classdef EigenFeatureExtracter < FeatureExtracter
         % Save property values in struct
         % Return struct for save function to write to MAT-file
             S.pcdim=this.pcdim;
+            S.eigenValueSumThred=this.eigenValueSumThred
             S.eigenVec=this.eigenVec;
             S.mVec=this.mVec;
         end
         function copy(this,S)
         % Method used to assign values from struct to properties
             this.pcdim=S.pcdim;
+            this.eigenValueSumThred=S.eigenValueSumThred;
             this.eigenVec=S.eigenVec;
             this.mVec=S.mVec;
         end
-        function this=EigenFeatureExtracter(pcdim,eigenVec)
-            this.pcdim=pcdim;
+        function this=EigenFeatureExtracter(eigenValueSumThred,eigenVec)
+            this.eigenValueSumThred=eigenValueSumThred;
+            this.pcdim=0;
             this.eigenVec=eigenVec;
         end
             
         function F=extract(this,X) %overwrite
             if(isempty(this.eigenVec))
                 this.mVec=mean(X,1);
-                [this.eigenVec F]= princomp(X);
+                [this.eigenVec F eigenvalues]= princomp(X);
+                s=0;
+                S=sum(eigenvalues);
+                for i=1:size(eigenvalues,1)
+                    s=s+eigenvalues(i);
+                    if(s/S>this.eigenValueSumThred)
+                        this.pcdim=i;
+                        break;
+                    end
+                end
                 F=F(:,1:this.pcdim);
                 this.eigenVec=this.eigenVec(:,1:this.pcdim);
             else

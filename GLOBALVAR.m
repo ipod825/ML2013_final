@@ -4,7 +4,7 @@
 % GLOBALVAR; %<-initialzie the variables
 
 global height width categNum normSideLength isTraining dataFname n rawdataFName featureFname
-global gamma C pcdim fold binThredshold
+global gamma C eigenValThred fold binThredshold
 height = 122;
 width = 105;
 categNum=12;
@@ -20,7 +20,7 @@ binThredshold=0.06;
 gamma=0.1;
 C=0.1;
 %% PCA
-pcdim=200;
+eigenValThred=0.9;
 %%
 
 %isTraining should be set by main program
@@ -34,8 +34,4 @@ else
     dataFname='./mltest_sparse.dat';
     featureFname='./featuretest.dat';
     rawdataFName='./test1.dat';
-%     n=6132;    
-%     dataFname='./mltrain_sparse.dat';
-%     featureFname='./featuretrain.dat';
-%     rawdataFName='./ml2013final_train.dat';
 end
