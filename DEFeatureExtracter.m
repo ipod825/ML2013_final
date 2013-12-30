@@ -10,6 +10,20 @@ end
 
 
 methods
+    function S = saveobj(this)
+        S.sideLen=this.sideLen;
+        S.halfWinLen=this.sideLen;
+        S.offStep=this.offStep;
+        S.winLen=this.winLen;
+        S.winNum=this.winNum;
+    end
+    function copy(this,S)
+        this.sideLen=S.sideLen;
+        this.halfWinLen=S.sideLen;
+        this.offStep=S.offStep;
+        this.winLen=S.winLen;
+        this.winNum=S.winNum;
+    end
 
     function this=DEFeatureExtracter(sideLen,categNum)
         this.winLen=2*sideLen/8;
@@ -25,11 +39,12 @@ methods
         global normSideLength
         GLOBALVAR;
         x=reshape(x,normSideLength,normSideLength);
+        imshow(x);
 %         x=this.padding(x,size(x,1)+4);
         x=edge(x,'log');
 %         x=this.contour(x);
 %         x=this.padding(x,this.sideLen);
-%             imshow(x);
+%         imshow(x);
         dirMatrix=this.calcDirection(x);
         f=this.constructFeatureVector(dirMatrix);
     end
@@ -103,6 +118,7 @@ methods
                 end
         end
     end
+    
     
 end
 end

@@ -12,7 +12,7 @@ function preprocessing(trainOrTest)
     Xnorm=zeros(n,d);
     h = waitbar(0,'Normalization...');
     for i=1:n
-        Xnorm(i,:)=reshape(normalizeImg(X(i,:),normSideLength),1,d);
+        Xnorm(i,:)=reshape(normalizeImg(X(i,:)),1,d);
         waitbar(i / n);
     end
     close(h);

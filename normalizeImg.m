@@ -1,12 +1,15 @@
-function ret=normalizeImg(img,normSideLength)
+function ret=normalizeImg(img)
 %NORMALIZEIMAGE normalize the input image. The sidelength of the normalized image is set to 64(default).
 %ASAN(http://link.springer.com/chapter/10.1007%2F3-540-40063-X_55#page-1) is implemented for better performance
-    setParameterDefault('normSideLength',64);
+    global normSideLength
+    GLOBALVAR;
+    setParameterDefault('sideLen','-1');
+    sideLen=normSideLength;
     img=sparse2full(img);
     img=binarize(img);
     h=size(img,1);
     w=size(img,2);
-    ret=zeros(normSideLength);
+    ret=zeros(sideLen);
     top=0;bottom=0;left=0;right=0;
     for r=1:h
         if(~isempty(find(img(r,:), 1))) top=r; break; end
@@ -37,27 +40,52 @@ function ret=normalizeImg(img,normSideLength)
     end
    
     Rnorm=sqrt(sin(pi*Rori/2));
-    Wnorm=normSideLength;
-    Hnorm=normSideLength;
+    Wnorm=sideLen;
+    Hnorm=sideLen;
     roffset=0;
     coffset=0;
     
     if(WgeH)
         Hnorm=floor(Wnorm*Rnorm);    
-        roffset=floor((normSideLength-Hnorm)/2);
+        roffset=floor((sideLen-Hnorm)/2);
     else
         Wnorm=floor(Hnorm*Rnorm);
-        hoffset=floor((normSideLength-Wnorm)/2)
+        hoffset=floor((sideLen-Wnorm)/2);
     end
-    
-    
+
     for r=1:Hnorm
         for c=1:Wnorm
             rori=ceil(Hori*(r/Hnorm));
             cori=ceil(Wori*(c/Wnorm));
             ret(r+roffset,c+coffset)=Iori(rori,cori);
         end
-    end
-    
-    
+    end   
 end
+
+%%inverse warping, not quite good
+%     for r=1:Hnorm
+%         for c=1:Wnorm
+%             rori=Hori*(r/Hnorm);
+%             cori=Wori*(c/Wnorm);
+%             lef=floor(cori);
+%             top=floor(rori);
+%             rig=lef+1;
+%             bot=top+1;
+%             rd=rori-top;
+%             cd=cori-c;
+%             if lef<1
+%                 lef=1;
+%             end
+%             if top<1
+%                 top=1;
+%             end
+%             if bot>Hori 
+%                 bot=Hori;
+%             end;
+%             if rig>Wori 
+%                 rig=Wori; 
+%             end;
+%             ret(r+roffset,c+coffset)=(1-rd)*(1-cd)*Iori(top,lef)+rd*cd*Iori(bot,rig)+...
+%                                      (1-rd)*cd*Iori(bot,lef)+rd*(1-cd)*Iori(top,rig);
+%         end
+%     end

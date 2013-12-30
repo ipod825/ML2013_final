@@ -12,10 +12,10 @@ methods
 
     function pred=classify(this,F)
         h = waitbar(0,'Testing...');
-        n=size(1,F);
+        n=size(F,1);
         pred=zeros(n,1);
         for i=1:n
-            pred(i)=this.classifyOne(F(i));
+            pred(i)=this.classifyOne(F(i,:));
             waitbar(i/n);
         end
         close(h);
