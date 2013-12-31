@@ -10,7 +10,7 @@ classdef EigenFeatureExtracter < FeatureExtracter
         % Save property values in struct
         % Return struct for save function to write to MAT-file
             S.pcdim=this.pcdim;
-            S.eigenValueSumThred=this.eigenValueSumThred
+            S.eigenValueSumThred=this.eigenValueSumThred;
             S.eigenVec=this.eigenVec;
             S.mVec=this.mVec;
         end

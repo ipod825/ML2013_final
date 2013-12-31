@@ -3,7 +3,7 @@
 % global height width .... %<- declare global variables you need 
 % GLOBALVAR; %<-initialzie the variables
 
-global height width categNum normSideLength isTraining dataFname n rawdataFName featureFname
+global height width categNum normSideLength isTraining dataFname n rawdataFName featureFname cachefeatureFName
 global gamma C eigenValThred fold binThredshold
 height = 122;
 width = 105;
@@ -28,10 +28,12 @@ if(isTraining)
     n=6132;    
     dataFname='./mltrain_sparse.dat';
     featureFname='./featuretrain.dat';
+    cachefeatureFName='./cachefeaturetrain.dat';
     rawdataFName='./ml2013final_train.dat';
 else
     n=3072;
     dataFname='./mltest_sparse.dat';
     featureFname='./featuretest.dat';
+    cachefeatureFName='./cachefeaturetest.dat';
     rawdataFName='./test1.dat';
 end

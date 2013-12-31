@@ -1,6 +1,15 @@
-global categNum normSideLength isTraining featureFname n eigenValThred
+global categNum normSideLength isTraining featureFname n eigenValThred cachefeatureFName
 isTraining=false;
 GLOBALVAR;
+
+featurecached=false;
+if exist(cachefeatureFName,'file')
+    featurecached=true;
+    data=dlmread(cachefeatureFName);
+    Y=data(:,1);
+    F=data(:,2:end);
+    cache=ones(1,2);
+end
 
 if(~exist('cache','var'))
     cache=zeros(1,2);
@@ -31,6 +40,7 @@ if(~cache(1,2))%cache F
         featureextracter=fe.saveobj;
         save('featureextracter.mat','featureextracter');
     end
+    dlmwrite(cachefeatureFName,[Y F]);
     cache(1,2)=true;
 end
 
@@ -43,6 +53,10 @@ switch(CLS)
        cls=SVMClassifier(size(F,2),categNum);
     case 3
         cls=KNNClassifier(size(F,2),categNum);
+    case 4
+        cls=NaieveBayesClassifier(size(F,2),categNum);
+    case 5
+        cls=DecisionTreeClassifier(size(F,2),categNum);
 end
 
 load 'classifier.mat';
