@@ -22,8 +22,12 @@ classdef EigenFeatureExtracter < FeatureExtracter
             this.mVec=S.mVec;
         end
         function this=EigenFeatureExtracter(eigenValueSumThred,eigenVec)
-            this.eigenValueSumThred=eigenValueSumThred;
-            this.pcdim=0;
+            if(eigenValueSumThred<=1)
+                this.eigenValueSumThred=eigenValueSumThred;
+                this.pcdim=-1;
+            else
+                this.pcdim=eigenValueSumThred;
+            end
             this.eigenVec=eigenVec;
         end
             
@@ -31,13 +35,15 @@ classdef EigenFeatureExtracter < FeatureExtracter
             if(isempty(this.eigenVec))
                 this.mVec=mean(X,1);
                 [this.eigenVec F eigenvalues]= princomp(X);
-                s=0;
-                S=sum(eigenvalues);
-                for i=1:size(eigenvalues,1)
-                    s=s+eigenvalues(i);
-                    if(s/S>this.eigenValueSumThred)
-                        this.pcdim=i;
-                        break;
+                if(this.pcdim<0)
+                    s=0;
+                    S=sum(eigenvalues);
+                    for i=1:size(eigenvalues,1)
+                        s=s+eigenvalues(i);
+                        if(s/S>this.eigenValueSumThred)
+                            this.pcdim=i;
+                            break;
+                        end
                     end
                 end
                 F=F(:,1:this.pcdim);
