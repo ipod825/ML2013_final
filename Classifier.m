@@ -24,7 +24,7 @@ methods
     function calssifyOne(this,f)
     end
     
-    function Eval=crossvalidation(this,Y,X,fold)
+    function sucRation=crossvalidation(this,Y,X,fold)
         n=size(Y,1);
         leaveNum=floor(n/fold);
         % inds = uniformArray(n,1,n);
@@ -45,9 +45,12 @@ methods
             clear cls;
             this.train(Y(trainInds,1),X(trainInds,:));
             pred=this.classify(X(testInds,:));
-            Eval=Eval+(size(find(Y(testInds)~=pred))/size(testInds,1));
+            Eval=Eval+(size(find(Y(testInds)~=pred),1)/size(testInds,1));
+            if(Eval/i>0.6)
+                break;
+            end
         end
-        Eval=Eval/fold;
+        sucRation=1-Eval/fold;
     end
 end % methods
 end % classdef

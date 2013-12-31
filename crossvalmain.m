@@ -12,7 +12,7 @@ if(~cache(1,1))%cache X
     cache(1,1)=true;
 end
 
-FE=2;
+FE=1;
 clear fe; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.
 switch(FE)
     case 1
@@ -38,7 +38,7 @@ end
 for gamma=[0.01, 0.1 1 10]
     for C=[0.01, 0.1 1 10]
         clear cls;
-        cls=SVMClassifier(size(F,2),categNum);
+        cls=SVMClassifier(size(F,2),categNum,gamma,C);
         Eval=cls.crossvalidation(Y,F,5);
         [gamma C Eval]
     end

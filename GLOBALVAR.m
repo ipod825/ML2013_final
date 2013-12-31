@@ -20,7 +20,7 @@ binThredshold=0.06;
 gamma=0.1;
 C=0.1;
 %% PCA
-eigenValThred=0.9;
+eigenValThred=50;
 %%
 
 %isTraining should be set by main program

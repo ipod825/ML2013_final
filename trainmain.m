@@ -42,7 +42,7 @@ switch(CLS)
     case 2
        cls=SVMClassifier(size(F,2),categNum);
     case 3
-        cls=EigenClassifier(size(F,2),categNum);
+        cls=KNNClassifier(size(F,2),categNum);
 end
 
 
