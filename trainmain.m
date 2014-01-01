@@ -1,4 +1,4 @@
-global categNum normSideLength isTraining featureFname n eigenValThred cachefeatureFName
+global categNum normSideLength isTraining featureFname n eigenValThred cachefeatureFName FE CLS
 isTraining=true;
 GLOBALVAR;
 
@@ -21,13 +21,14 @@ if(~cache(1,1))%cache X
     cache(1,1)=true;
 end
 
-FE=2;
 clear fe; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.
 switch(FE)
     case 1
         fe=DEFeatureExtracter(normSideLength,categNum);
     case 2
         fe=EigenFeatureExtracter(eigenValThred,[]);
+    case 3
+        fe=WeightFeatureExtracter(normSideLength, categNum);
 end
 if(~isTraining)
     load 'featureextracter.mat';
@@ -45,7 +46,6 @@ if(~cache(1,2))%cache F
 end
 
 clear cls; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.
-CLS=3;
 switch(CLS)
     case 1
        cls=AMDClassifier(size(F,2),categNum);
