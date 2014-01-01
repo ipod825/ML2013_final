@@ -27,7 +27,7 @@ if(~isTraining)
     fe.copy(featureextracter);
 end
 
-if(featureextracterchanged)
+if(~exist('F','var') || featureextracterchanged)
     if exist(cachefeatureFName,'file')
         warning('Using cached feature file: %s. Remove it if you have modified the featureextracter.',cachefeatureFName);
         featurecached=true;
