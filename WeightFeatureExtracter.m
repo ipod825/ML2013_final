@@ -73,6 +73,12 @@ methods
 
     xcenter = xmoment1 / xmoment0;
     ycenter = ymoment1 / ymoment0;
+    if isnan(xcenter)
+      xcenter = 0;
+    end
+    if isnan(ycenter)
+      ycenter = 0;
+    end
 
     x_norm = [1:normSideLength]-xcenter;
     ind_x = [x_norm.^2 ; x_norm.^3 ; x_norm.^4];
@@ -91,6 +97,18 @@ methods
 
     xkurtosis = xmoment5/(xmoment3^(2));
     ykurtosis = ymoment5/(ymoment3^(2));
+    if isnan(xskewness)
+      xskewness = 0;
+    end
+    if isnan(yskewness)
+      yskewness = 0;
+    end
+    if isnan(xkurtosis)
+      xkurtosis = 0;
+    end
+    if isnan(ykurtosis)
+      ykurtosis = 0;
+    end
     geoFeature = [weight xcenter ycenter xskewness yskewness xkurtosis ykurtosis];
   end
 end % method end
