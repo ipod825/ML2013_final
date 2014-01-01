@@ -4,7 +4,8 @@
 % GLOBALVAR; %<-initialzie the variables
 
 global height width categNum normSideLength isTraining dataFname n...
-    rawdataFName normimgFName cachefeatureFName featureextracterFName classifierFName
+    rawdataFName normimgFName cachefeatureFName featureextracterFName classifierFName...
+    featureextracterchanged
 global gamma C eigenValThred fold binThredshold FE CLS 
 height = 122;
 width = 105;
@@ -39,8 +40,13 @@ else
     rawdataFName='./test1.dat';
 end
 
-
-FE=3;
+tmp=2;
+if(FE~=tmp)
+    featureextracterchanged=true;
+else
+    featureextracterchanged=false;
+end
+FE=tmp;
 switch(FE)
     case 1
         fesufix='DE';
@@ -52,7 +58,7 @@ end
 cachefeatureFName=[cachefeatureFName fesufix '.dat'];
 featureextracterFName=['./featureextarcter_' fesufix '.mat'];
 
-CLS=4;
+CLS=6;
 switch(FE)
     case 1
         clssuffix='AMD';
@@ -62,7 +68,9 @@ switch(FE)
         clssuffix='KNN';
     case 4
         clssuffix='NaieveBayes';
-    case 4
+    case 5
         clssuffix='DecisionTree';
+    case 5
+        clssuffix='Discriment';
 end
 classifierFName=['./classifier_' clssuffix '.mat'];

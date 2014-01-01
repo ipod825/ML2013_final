@@ -13,7 +13,10 @@ methods
         this.F=F;
     end
     function pred=classify(this,F)
+        voter=10;
         pred = knnsearch(this.F,F,'k',10,'distance','minkowski','p',5);
+%         pred = knnsearch(this.F,F,'k',10,'distance','mahalanobis');
+%         pred=mode(pred,2);
         pred=pred(:,1);
         pred=this.Y(pred);
     end
