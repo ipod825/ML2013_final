@@ -21,6 +21,11 @@ switch(FE)
         fe=EigenFeatureExtracter(eigenValThred,[]);
     case 3
         fe=WeightFeatureExtracter(normSideLength, categNum);
+    case 4
+        extracters=cell(1,2);
+        extracters{1,1}=WeightFeatureExtracter(normSideLength, categNum);
+        extracters{1,2}=EigenFeatureExtracter(eigenValThred,[]);
+        fe=CompoundFeatureExtracter(extracters);
 end
 if(~isTraining)
     load(featureextracterFName);

@@ -2,36 +2,58 @@ classdef WeightFeatureExtracter < FeatureExtracter
 
 properties (SetAccess = private)
     sideLen=0;
+    winLen=0;
+    winNum=0; 
+    numFeaturePerWin;
 end
 
 methods
   function this = WeightFeatureExtracter(sideLen, categNum)
     this.sideLen = sideLen;
-    this.d = 7;
+    this.winLen=2*sideLen/8;
+    this.halfWinLen=this.winLen/2;
+    this.winNum=((this.sideLen-this.halfWinLen)/this.halfWinLen)^2;
+    this.numFeaturePerWin=7;
+	this.d=this.winNum*this.numFeaturePerWin;
     this.categNum = categNum;
   end
   function S = saveobj(this)
   % Save property values in struct
   % Return struct for save function to write to MAT-file
-      S.sideLen=this.sideLen;
-      S.d = this.d;
-      S.categNum = this.categNum;
+      this.sideLen=S.sideLen;
+      this.winLen=S.winLen;
+      this.halfWinLen=S.winLen;
+      this.winNum=S.winNum;
+      this.d = S.d;
+      this.categNum = S.categNum;
   end
   function copy(this,S)
   % Method used to assign values from struct to properties
-      this.sideLen=S.sideLen;
-      this.d=S.d;
-      this.categNum=S.categNum;
+      S.sideLen=this.sideLen;
+      S.winLen=this.winLen;
+      S.halfWinLen=this.winLen;
+      S.winNum=this.winNum;
+      S.d = this.d;
+      S.categNum = this.categNum;
   end
+  
+  
   function f=extractOne(this,x)
-    global normSideLength
-    GLOBALVAR;
-    x = reshape(x, normSideLength, normSideLength);
-    f=this.calcFeature(x);
+    x = reshape(x, this.sideLen, this.sidLen);
+    winBegs=1:this.halfWinLen:this.winLen-this.halfWinLen+1;
+    winInd=1;
+    winScore=zeros(this.numFeaturePerWin,this.winNum);
+    for top=winBegs
+        bottom=top+this.winLen-1;
+        for left=winBegs
+            right=left+this.winLen-1;
+            winScore(:,winInd)=this.calcFeature(x(top:bottom,left:right));
+        end
+    end
+    f=reshape(winScore,1,this.d);
   end
 
   function geoFeature = calcFeature(this,img)
-    global normSideLength
 
     %total weight of image
     weight = sum(img(:));
@@ -43,8 +65,8 @@ methods
     % Find the central moments of the horizontal and vertical projections
 
     % Find the 0th and 1st moments of H and V projections
-    xmoment0 = [ones(1,normSideLength)]*xvec;
-    ymoment0 = [ones(1,normSideLength)]*yvec;
+    xmoment0 = [ones(1,this.sideLen)]*xvec;
+    ymoment0 = [ones(1,this.sideLen)]*yvec;
 
     xmoment1 = [1:normSideLength]*xvec;
     ymoment1 = [1:normSideLength]*yvec;

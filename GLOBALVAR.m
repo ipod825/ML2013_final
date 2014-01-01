@@ -41,7 +41,7 @@ else
 end
 
 %%
-tmp=3;%change this for FE
+tmp=4;%change this for FE
 if(isempty(FE) || FE~=tmp)
     featureextracterchanged=true;
 else
@@ -55,6 +55,8 @@ switch(FE)
         fesufix='Eigen';
     case 3
         fesufix='Weiget';
+    case 4
+        fesufix='Compound';
 end
 cachefeatureFName=[cachefeatureFName fesufix '.dat'];
 featureextracterFName=['./featureextarcter_' fesufix '.mat'];
