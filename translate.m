@@ -14,8 +14,8 @@ function translate(trainOrTest)
     if(fd<0)
         error('You miss %s, please move it to the current directory.',rawdataFName);
     end
-
-    for i = 1:n-1
+    h = waitbar(0,'Normalization...');
+    for i = 1:n    
         line = fgetl(fd);
         ind=i;
         splitline = strread(line, '%s');
@@ -26,8 +26,9 @@ function translate(trainOrTest)
             data_dump=[ind, (data(1)+1), data(2)];
             fprintf( ofd,'%d %d %f\n', data_dump);
         end
+        waitbar(i / n);
     end
-
+    close(h);
     fclose(fd);
     fclose(ofd);
 end

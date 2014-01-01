@@ -5,7 +5,7 @@
 
 global height width categNum normSideLength isTraining dataFname n...
     rawdataFName normimgFName cachefeatureFName featureextracterFName classifierFName...
-    featureextracterchanged
+    featurecached
 global gamma C eigenValThred fold binThredshold FE CLS 
 height = 122;
 width = 105;
@@ -27,37 +27,37 @@ eigenValThred=50;
 
 %isTraining should be set by main program
 if(isTraining)
-    n=6132;    
+    n=6133;    
     dataFname='./mltrain_sparse.dat';
     normimgFName='./normimgtrain.dat';
-    cachefeatureFName='./cachefeaturetrain_';
+    cachefeatureFName='cachefeaturetrain_';
     rawdataFName='./ml2013final_train.dat';
 else
     n=3072;
     dataFname='./mltest_sparse.dat';
     normimgFName='./normimgtest.dat';
-    cachefeatureFName='./cachefeaturetest_';
+    cachefeatureFName='cachefeaturetest_';
     rawdataFName='./test1.dat';
 end
 
 %%
-tmp=3;%change this for FE
+tmp=2;%change this for FE
 if(isempty(FE) || FE~=tmp)
-    featureextracterchanged=true;
+    featurecached=false;
 else
-    featureextracterchanged=false;
+    featurecached=true;
 end
 FE=tmp;
 switch(FE)
     case 1
-        fesufix='DE';
+        fesuffix='DE';
     case 2
-        fesufix='Eigen';
+        fesuffix='Eigen';
     case 3
-        fesufix='Weiget';
+        fesuffix='Weiget';
 end
-cachefeatureFName=[cachefeatureFName fesufix '.dat'];
-featureextracterFName=['./featureextarcter_' fesufix '.mat'];
+cachefeatureFName=[  cachefeatureFName fesuffix  '.dat'];
+featureextracterFName=[ 'featureextarcter_' fesuffix '.mat'];
 
 %%
 CLS=6;
@@ -75,4 +75,4 @@ switch(CLS)
     case 6
         clssuffix='Discriment';
 end
-classifierFName=['./classifier_' clssuffix '.mat'];
+classifierFName=[ 'classifier_' clssuffix '.mat'];
