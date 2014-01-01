@@ -41,7 +41,7 @@ else
 end
 
 %%
-tmp=2;%change this for FE
+tmp=3;%change this for FE
 if(isempty(FE) || FE~=tmp)
     featureextracterchanged=true;
 else
@@ -61,7 +61,7 @@ featureextracterFName=['./featureextarcter_' fesufix '.mat'];
 
 %%
 CLS=6;
-switch(FE)
+switch(CLS)
     case 1
         clssuffix='AMD';
     case 2
@@ -72,7 +72,7 @@ switch(FE)
         clssuffix='NaieveBayes';
     case 5
         clssuffix='DecisionTree';
-    case 5
+    case 6
         clssuffix='Discriment';
 end
 classifierFName=['./classifier_' clssuffix '.mat'];

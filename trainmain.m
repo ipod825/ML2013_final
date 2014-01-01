@@ -1,11 +1,12 @@
-global categNum normSideLength isTraining normimgFName n eigenValThred FE CLS...
+global categNum normSideLength isTraining normimgFName n eigenValThred FE CLS ...
     cachefeatureFName featureextracterFName classifierFName...
     featureextracterchanged
-if(~isempty(isTraining) && ~isTraining)
-    clear Y X F;
-end
 isTraining=true;
 GLOBALVAR;
+if(exist('Y','var') && size(Y,1)~=n)
+    featureextracterchanged=true;
+    clear Y X F;
+end
 
 if(~exist('X','var'))
     [Y, X]=readmatrix(normimgFName,n,normSideLength,normSideLength);
