@@ -6,9 +6,14 @@ function ret=normalizeImg(img)
     setParameterDefault('sideLen','-1');
     sideLen=normSideLength;
     img=sparse2full(img);
-    img=binarize(img);
     h=size(img,1);
     w=size(img,2);
+    
+    img=medfilt2(img,[3,3]);
+    img=binarize(img);
+    img(1:2,:)=0; img(h-1:h,:)=0;
+    img(:,1:2)=0; img(:,w-1:w)=0;
+
     ret=zeros(sideLen);
     top=0;bottom=0;left=0;right=0;
     for r=1:h
@@ -60,7 +65,10 @@ function ret=normalizeImg(img)
             ret(r+roffset,c+coffset)=Iori(rori,cori);
         end
     end   
+%     ret=denoise(ret);
 end
+
+
 
 %%inverse warping, not quite good
 %     for r=1:Hnorm
