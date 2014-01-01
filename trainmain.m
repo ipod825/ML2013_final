@@ -1,9 +1,11 @@
-global categNum normSideLength isTraining featureFname n eigenValThred cachefeatureFName FE CLS
+global categNum normSideLength isTraining normimgFName n eigenValThred FE CLS...
+    cachefeatureFName featureextracterFName classifierFName
 isTraining=true;
 GLOBALVAR;
 
 featurecached=false;
 if exist(cachefeatureFName,'file')
+    warning('Using cached feature file: %s. Remove it if you have modified its featureextracter.',cachefeatureFName);
     featurecached=true;
     data=dlmread(cachefeatureFName);
     Y=data(:,1);
@@ -16,7 +18,7 @@ if(~exist('cache','var'))
 end
 
 if(~cache(1,1))%cache X
-    [Y, X]=readmatrix(featureFname,n,normSideLength,normSideLength);
+    [Y, X]=readmatrix(normimgFName,n,normSideLength,normSideLength);
     X=full(X);
     cache(1,1)=true;
 end
@@ -31,7 +33,7 @@ switch(FE)
         fe=WeightFeatureExtracter(normSideLength, categNum);
 end
 if(~isTraining)
-    load 'featureextracter.mat';
+    load(featureextracterFName);
     fe.copy(featureextracter);
 end
 
@@ -39,10 +41,12 @@ if(~cache(1,2))%cache F
     F=fe.extract(X);
     if(isTraining)
         featureextracter=fe.saveobj;
-        save('featureextracter.mat','featureextracter');
+        save(featureextracterFName,'featureextracter');
     end
     dlmwrite(cachefeatureFName,[Y F]);
     cache(1,2)=true;
+else
+    warning('Using cached feature extracter. Run cache(1,2)=0; if you have modified feature extracter.');
 end
 
 clear cls; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.
@@ -62,5 +66,5 @@ end
 
 cls.train(Y,F);
 classifier=cls.saveobj;
-save('classifier.mat','classifier');
+save(classifierFName,'classifier');
 
