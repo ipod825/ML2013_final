@@ -1,51 +1,49 @@
 global categNum normSideLength isTraining normimgFName n eigenValThred FE CLS...
     cachefeatureFName featureextracterFName classifierFName...
     featureextracterchanged
+if(~isempty(isTraining) && ~isTraining)
+    clear Y X F;
+end
 isTraining=true;
 GLOBALVAR;
 
-featurecached=false;
-if exist(cachefeatureFName,'file')
-    warning('Using cached feature file: %s. Remove it if you have modified the featureextracter.',cachefeatureFName);
-    featurecached=true;
-    data=dlmread(cachefeatureFName);
-    Y=data(:,1);
-    F=data(:,2:end);
-else
+if(~exist('X','var'))
+    [Y, X]=readmatrix(normimgFName,n,normSideLength,normSideLength);
+    X=full(X);
+end
 
-    if(~exist('cache','var'))
-        cache=zeros(1,2);
-    end
+clear fe; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.
+switch(FE)
+    case 1
+        fe=DEFeatureExtracter(normSideLength,categNum);
+    case 2
+        fe=EigenFeatureExtracter(eigenValThred,[]);
+    case 3
+        fe=WeightFeatureExtracter(normSideLength, categNum);
+end
+if(~isTraining)
+    load(featureextracterFName);
+    fe.copy(featureextracter);
+end
 
-    if(~cache(1,1))%cache normized image
-        [Y, X]=readmatrix(normimgFName,n,normSideLength,normSideLength);
-        X=full(X);
-        cache(1,1)=true;
-    end
-
-    clear fe; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.
-    switch(FE)
-        case 1
-            fe=DEFeatureExtracter(normSideLength,categNum);
-        case 2
-            fe=EigenFeatureExtracter(eigenValThred,[]);
-        case 3
-            fe=WeightFeatureExtracter(normSideLength, categNum);
-    end
-    if(~isTraining)
-        load(featureextracterFName);
-        fe.copy(featureextracter);
-    end
-
-    if(~cache(1,2) || featureextracterchanged)%cache feature
+if(featureextracterchanged)
+    if exist(cachefeatureFName,'file')
+        warning('Using cached feature file: %s. Remove it if you have modified the featureextracter.',cachefeatureFName);
+        featurecached=true;
+        data=dlmread(cachefeatureFName);
+        Y=data(:,1);
+        F=data(:,2:end);
+    else
         F=fe.extract(X);
         if(isTraining)
             featureextracter=fe.saveobj;
             save(featureextracterFName,'featureextracter');
         end
-        dlmwrite(cachefeatureFName,[Y F]);
-        cache(1,2)=true;
+        if ~exist(cachefeatureFName,'file')
+            dlmwrite(cachefeatureFName,[Y F]);
+        end
     end
+    featureextracterchanged=false;
 end
 
 clear cls; %Use this when debugging. When you have modified the class file, you need to reinitial the class instance.

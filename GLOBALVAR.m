@@ -40,8 +40,9 @@ else
     rawdataFName='./test1.dat';
 end
 
-tmp=2;
-if(FE~=tmp)
+%%
+tmp=2;%change this for FE
+if(isempty(FE) || FE~=tmp)
     featureextracterchanged=true;
 else
     featureextracterchanged=false;
@@ -58,6 +59,7 @@ end
 cachefeatureFName=[cachefeatureFName fesufix '.dat'];
 featureextracterFName=['./featureextarcter_' fesufix '.mat'];
 
+%%
 CLS=6;
 switch(FE)
     case 1

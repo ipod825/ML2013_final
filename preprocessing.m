@@ -3,7 +3,7 @@ function preprocessing(trainOrTest)
 %PREPROCESSING(true) translate for training file, while PREPROCESSING(false) for testing file.
 %The new format is a sparse matrix in the form of [Y X], where Y is the label and X is the raw image pixel grayscale value.
 %For more information, please check readmatrix.m.
-    global height width normSideLength isTraining dataFname featureFname n
+    global height width normSideLength isTraining dataFname normimgFName n
     isTraining=trainOrTest;
     GLOBALVAR;
     
@@ -17,5 +17,5 @@ function preprocessing(trainOrTest)
     end
     close(h);
     [i, j, k]=find(sparse([Y Xnorm]));
-    dlmwrite(featureFname,[i j k]);
+    dlmwrite(normimgFName,[i j k]);
 end
