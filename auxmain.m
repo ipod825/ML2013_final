@@ -1,7 +1,7 @@
-global categNum normSideLength isTraining n featurecached  normimgFName cachefeatureFName featureextracterFName 
-global FE CLS
-global eigenValThred
-global gamma C
+global  categNum normSideLength isTraining n featurecached Fesuffix fecompoundind...
+    normimgFName cachefeatureFName featureextracterFName...
+    compoundCachefeatureFName compoundFeatureextracterFName
+global gamma C eigenValThred fold binThredshold FE CLS 
 GLOBALVAR;  % Some global variables are set depends on the value of isTraining(set in trainmain.m or testmain.m)
 
 if(~exist('Y','var'))   % check if normalized image has been loaded
@@ -10,32 +10,21 @@ if(~exist('Y','var'))   % check if normalized image has been loaded
 elseif(size(Y,1)~=n)    % check if the cached Y X F are not right(i.e cached training data when testing)
     [Y, X]=readmatrix(normimgFName,n,normSideLength,normSideLength);
     X=full(X);
+    clear F;
     featurecached=false; 
 end
 
 clear fe; 
-switch(FE)
-    case 1 
-        fe=DEFeatureExtracter(normSideLength,categNum);
-    case 2 
-        fe=EigenFeatureExtracter(eigenValThred,[]);
-    case 3 
-        fe=WeightFeatureExtracter(normSideLength, categNum);
-    case 4
-        fe=TextureFeatureExtracter(normSideLength, categNum,eigenValThred);
-    case 5
-        fe=BrokenAreaFeatureExtracter(normSideLength, categNum);
-    case 6
-        fe=ProfileFeatureExtracter(normSideLength, categNum);
-    case 7
-%         extracters{1,1}=WeightFeatureExtracter(normSideLength, categNum);
-        extracters=cell(1,1);
-        extracters{1,1}=TextureFeatureExtracter(normSideLength, categNum,eigenValThred);
-%         extracters{1,2}=BrokenAreaFeatureExtracter(normSideLength, categNum);
-%         extracters{1,1}=ProfileExtracter(normSideLength, categNum);
-%         extracters{1,2}=EigenFeatureExtracter(eigenValThred,[]);
-        fe=CompoundFeatureExtracter(extracters);
-end
+clear Fes;
+Fes=cell(1,size(Fesuffix,2));
+Fes{1,1}=DEFeatureExtracter(normSideLength,categNum);
+Fes{1,2}=EigenFeatureExtracter(eigenValThred,[]);
+Fes{1,3}=WeightFeatureExtracter(normSideLength, categNum);
+Fes{1,4}=TextureFeatureExtracter(normSideLength, categNum,eigenValThred);
+Fes{1,5}=ProfileFeatureExtracter(normSideLength, categNum);
+Fes{1,6}=CompoundFeatureExtracter({Fes{fecompoundind}},compoundCachefeatureFName,compoundFeatureextracterFName);
+
+fe=Fes{1,FE};
 if(~isTraining) % for some feature extracter, we save some information at training and load it when testing
     load(featureextracterFName);
     fe.copy(featureextracter);
@@ -46,7 +35,6 @@ if(~exist('F','var') || ~featurecached)
     if exist(cachefeatureFName,'file')
         warning('Using cached feature file: %s. Remove it if you have modified the featureextracter.',cachefeatureFName);
         data=dlmread(cachefeatureFName);
-        Y=data(:,1);
         F=data(:,2:end);
     else
         F=fe.extract(X);
@@ -55,7 +43,7 @@ if(~exist('F','var') || ~featurecached)
             save(featureextracterFName,'featureextracter');
         end
         if (cachingFeatureOffline)
-            dlmwrite(cachefeatureFName,[Y F]);
+            dlmwrite(cachefeatureFName,F);
         end
     end
     featurecached=true;

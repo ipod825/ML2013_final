@@ -3,9 +3,10 @@
 % global height width .... %<- declare global variables you need 
 % GLOBALVAR; %<-initialzie the variables
 
-global height width categNum normSideLength isTraining dataFname n...
+global height width categNum normSideLength isTraining dataFname n featurecached Fesuffix fecompoundind...
     rawdataFName normimgFName cachefeatureFName featureextracterFName classifierFName...
-    featurecached
+    compoundCachefeatureFName compoundFeatureextracterFName
+    
 global gamma C eigenValThred fold binThredshold FE CLS 
 height = 122;
 width = 105;
@@ -14,7 +15,7 @@ categNum=12;
 
 %tunning
 %% CrossValidation
-fold=5;
+fold=6;
 %% Normalization
 normSideLength=64;
 binThredshold=0.06;
@@ -41,34 +42,31 @@ else
 end
 
 %%
-tmp=4;%change this for FE
+tmp=6;%change this for FE
+fecompoundind=[4,5];
 if(isempty(FE) || FE~=tmp)
     featurecached=false;
 else
     featurecached=true;
 end
 FE=tmp;
-switch(FE)
-    case 1
-        fesuffix='DE';
-    case 2
-        fesuffix='Eigen';
-    case 3
-        fesuffix='Weiget';
-    case 4
-        fesuffix='Texture';
-    case 5
-        fesuffix='Broken';
-    case 6
-        fesuffix='Profile';
-    case 7
-        fesuffix='Compound';
+
+Fesuffix={'DE';'Eigen';'Weight';'Texture';'Profile';'Compound'};
+fesuffix=Fesuffix{FE};
+
+compoundCachefeatureFName=cell(1,size(fecompoundind,2));
+compoundFeatureextracterFName=cell(1,size(fecompoundind,2));
+for i=1:size(fecompoundind,2)
+    compoundCachefeatureFName{1,i}=strcat(cachefeatureFName,Fesuffix(fecompoundind(i)),'.dat');
+    compoundFeatureextracterFName{1,i}=strcat('featureextarcter_',Fesuffix(fecompoundind(i)),'.mat');
 end
-cachefeatureFName=[  cachefeatureFName fesuffix  '.dat'];
+
+cachefeatureFName=[ cachefeatureFName fesuffix  '.dat'];
 featureextracterFName=[ 'featureextarcter_' fesuffix '.mat'];
 
+
 %%
-CLS=2;
+CLS=6;
 switch(CLS)
     case 1
         clssuffix='AMD';

@@ -64,9 +64,8 @@ methods
     
     function ret = getGaborImg(this,img)
         ret=cell(1,4);
-        img = mat2gray(img);
-        img = bwmorph(img>0.07, 'clean');
-        img = bwmorph(img, 'majority');
+%         img = bwmorph(img>0.07, 'clean');
+%         img = bwmorph(img, 'majority');
         img = bwmorph(img, 'thin', Inf);
 
         f = pi/2;

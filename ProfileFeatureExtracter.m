@@ -33,8 +33,8 @@ methods
         for i=1:this.sideLen
             row=x(i,:);
             col=x(:,i);
-            [nouse rind]=find(row);
-            [nouse cind]=find(col);
+            [~, rind]=find(row);
+            [~, cind]=find(col);
             if(~isempty(rind))
                 topp(i)=rind(1);
                 bottomp(i)=rind(end);
