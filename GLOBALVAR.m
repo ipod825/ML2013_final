@@ -20,14 +20,14 @@ normSideLength=64;
 binThredshold=0.06;
 %% SVM
 gamma=0.1;
-C=0.1;
+C=100;
 %% PCA
-eigenValThred=50;
+eigenValThred=0.8;
 %%
 
 %isTraining should be set by main program
 if(isTraining)
-    n=6133;    
+    n=6133;        
     dataFname='./mltrain_sparse.dat';
     normimgFName='./normimgtrain.dat';
     cachefeatureFName='cachefeaturetrain_';
@@ -41,7 +41,7 @@ else
 end
 
 %%
-tmp=2;%change this for FE
+tmp=4;%change this for FE
 if(isempty(FE) || FE~=tmp)
     featurecached=false;
 else
@@ -55,12 +55,20 @@ switch(FE)
         fesuffix='Eigen';
     case 3
         fesuffix='Weiget';
+    case 4
+        fesuffix='Texture';
+    case 5
+        fesuffix='Broken';
+    case 6
+        fesuffix='Profile';
+    case 7
+        fesuffix='Compound';
 end
 cachefeatureFName=[  cachefeatureFName fesuffix  '.dat'];
 featureextracterFName=[ 'featureextarcter_' fesuffix '.mat'];
 
 %%
-CLS=6;
+CLS=2;
 switch(CLS)
     case 1
         clssuffix='AMD';
@@ -74,5 +82,9 @@ switch(CLS)
         clssuffix='DecisionTree';
     case 6
         clssuffix='Discriment';
+    case 7
+        clssuffix='Boost';
+    case 8
+        clssuffix='Compound';
 end
 classifierFName=[ 'classifier_' clssuffix '.mat'];
