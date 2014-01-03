@@ -2,12 +2,14 @@
 %In the file you want to add some global variables in this file, write:
 % global height width .... %<- declare global variables you need 
 % GLOBALVAR; %<-initialzie the variables
-
-global height width categNum normSideLength isTraining dataFname n featurecached Fesuffix fecompoundind...
-    rawdataFName normimgFName cachefeatureFName featureextracterFName classifierFName...
-    compoundCachefeatureFName compoundFeatureextracterFName
-    
-global gamma C eigenValThred fold binThredshold FE CLS 
+global height width   rawdataFName dataFname
+global fold binThredshold
+global classifierFName
+global n categNum  normSideLength isTraining  featurecached...
+       normimgFName cachefeatureFName featureextracterFName 
+global FE CLS Fesuffix fecompoundind Clssuffix clscompoundind...
+       compoundCachefeatureFName compoundFeatureextracterFName compoundClassifierFName clscompoundProb
+global gamma C eigenValThred 
 height = 122;
 width = 105;
 categNum=12;
@@ -20,11 +22,16 @@ fold=6;
 normSideLength=64;
 binThredshold=0.06;
 %% SVM
-gamma=0.1;
-C=100;
+gamma=0.01;
+C=20;
 %% PCA
-eigenValThred=0.8;
-%%
+eigenValThred=50;
+%% CompoundClassifier
+clscompoundind=[2,6,6,2];%Clssuffix={'AMD';'SVM';'KNN';'NaieveBayes';'DecisionTree';'Discriment';'Boost';'Compound'};
+auxclscompoundind=[4,4,2,2];%Fesuffix={'DE';'Eigen';'Weight';'Texture';'Profile';'Compound'};
+% clscompoundProb=[0.9,0.87,0.81,0.79];
+clscompoundProb=[0.1,0.6,0.3,0.2];
+
 
 %isTraining should be set by main program
 if(isTraining)
@@ -41,8 +48,10 @@ else
     rawdataFName='./test1.dat';
 end
 
+modeldir='./model/';
+mkdir(modeldir);
 %%
-tmp=6;%change this for FE
+tmp=4;%change this for FE
 fecompoundind=[4,5];
 if(isempty(FE) || FE~=tmp)
     featurecached=false;
@@ -57,32 +66,27 @@ fesuffix=Fesuffix{FE};
 compoundCachefeatureFName=cell(1,size(fecompoundind,2));
 compoundFeatureextracterFName=cell(1,size(fecompoundind,2));
 for i=1:size(fecompoundind,2)
-    compoundCachefeatureFName{1,i}=strcat(cachefeatureFName,Fesuffix(fecompoundind(i)),'.dat');
-    compoundFeatureextracterFName{1,i}=strcat('featureextarcter_',Fesuffix(fecompoundind(i)),'.mat');
+    compoundCachefeatureFName{1,i}=strcat(modeldir,cachefeatureFName,Fesuffix(fecompoundind(i)),'.dat');
+    compoundFeatureextracterFName{1,i}=strcat(modeldir,'featureextarcter_',Fesuffix(fecompoundind(i)),'.mat');
 end
 
-cachefeatureFName=[ cachefeatureFName fesuffix  '.dat'];
-featureextracterFName=[ 'featureextarcter_' fesuffix '.mat'];
+cachefeatureFName=strcat(modeldir,cachefeatureFName,fesuffix,'.dat');
+featureextracterFName=strcat(modeldir,'featureextarcter_',fesuffix,'.mat');
 
 
 %%
-CLS=6;
-switch(CLS)
-    case 1
-        clssuffix='AMD';
-    case 2
-        clssuffix='SVM';
-    case 3
-        clssuffix='KNN';
-    case 4
-        clssuffix='NaieveBayes';
-    case 5
-        clssuffix='DecisionTree';
-    case 6
-        clssuffix='Discriment';
-    case 7
-        clssuffix='Boost';
-    case 8
-        clssuffix='Compound';
+CLS=2;
+
+Clssuffix={'AMD';'SVM';'KNN';'NaieveBayes';'DecisionTree';'Discriment';'Boost';'Compound'};
+clssuffix=Clssuffix{CLS};
+
+compoundClassifierFName=cell(1,size(clscompoundind,2));
+for i=1:size(clscompoundind,2)
+    compoundClassifierFName{1,i}=strcat(modeldir,'classifier_',Clssuffix(clscompoundind(i)),...
+                                        '_',Fesuffix(auxclscompoundind(i)),'.mat');
 end
-classifierFName=[ 'classifier_' clssuffix '.mat'];
+if(strcmp(clssuffix,'Compound'))
+    classifierFName=strcat(modeldir,'classifier_',clssuffix,'.mat');
+else
+    classifierFName=strcat(modeldir,'classifier_',clssuffix,'_',fesuffix,'.mat');
+end
