@@ -2,3 +2,5 @@
 *.m~
 *.asv
 *.mat
+*.bak
+*.txt

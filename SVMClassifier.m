@@ -7,18 +7,18 @@ end
 methods
     function this=SVMClassifier(d,categNum,gamma,C)
         setParameterDefault('gamma',0.1);
-        setParameterDefault('C',0.1);
+        setParameterDefault('C',100);
         this.d=d;
         this.categNum=categNum;
         this.gamma=gamma;
         this.C=C;
     end
     function train(this,Y,F)
-        svmoptions=sprintf('-s 0 -t 2 -g %f -c %f -q',this.gamma, this.C);
+        svmoptions=sprintf('-s 0 -t 2 -g %f -c %f -b 1 -q',this.gamma, this.C);
         this.model=svmtrain(Y, F, svmoptions);
     end
     function pred=classify(this,F)
-        pred = sign(svmpredict(zeros(size(F,1),1), F, this.model,'-q'));
+        pred = svmpredict(zeros(size(F,1),1), F, this.model,'-q -b 1');
     end
     function S = saveobj(this)
         S.d=this.d;

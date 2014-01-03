@@ -1,6 +1,6 @@
 classdef DiscrimentClassifier < WrapClassifier
 methods
-    function this=DiscrimentClassifier(d,categNum)
+    function this=DiscrimentClassifier(d,categNum,weight)
         this.d=d;
         this.categNum=categNum;
     end

@@ -20,7 +20,7 @@ X = sparse(N,d);
 
 fd = fopen(filename);
 
-
+h = waitbar(0,'Reading data...');
 for i = 1:nMax
     line = fgetl(fd);
     if i<nBeg continue; end
@@ -31,8 +31,10 @@ for i = 1:nMax
 	for j = 2:length(splitline)
 		data = sscanf(splitline{j}, '%f:%f');
 		X(ind,(data(1))) = data(2);
-	end
+    end
+    waitbar(i / n);
 end
+close(h);
 
 if(only>0)
     inds=find(Y==only);

@@ -30,5 +30,11 @@ methods
             F=[F this.extracters{1,i}.extract(X)];
         end
     end
+    function w=getDimension(this)
+        w=zeros(1,this.numExtracters);
+        for i=1:this.numExtracters
+            w(i)=this.extracters{1,i}.d;
+        end
+    end
 end
 end
