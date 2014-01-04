@@ -2,32 +2,48 @@ classdef CompoundFeatureExtracter < FeatureExtracter
 properties
     numExtracters;
     extracters;
+    cachefeatureFName
+    featureextracterFName;
 end
-
 
 methods
     function S = saveobj(this)
     % Save property values in struct
-    % Return struct for save function to write to MAT-file
-        S.extracters=cell(1,size(this.extracters,2));
+    % Return struct for save function to write to MAT-file    
+        S.numExtracters=this.numExtracters;
+        S.featureextracterFName=this.featureextracterFName;
         for i=1:this.numExtracters
-            S.extracters{1,i}=this.extracters{1,i}.saveobj;
+            featureextracter=this.extracters{1,i}.saveobj;
+            save(char(this.featureextracterFName{1,i}),'featureextracter');
         end
     end
     function copy(this,S)
     % Method used to assign values from struct to properties
+        this.numExtracters=S.numExtracters;
+        this.featureextracterFName=S.featureextracterFName;
         for i=1:this.numExtracters
-            this.extracters{1,i}.copy(S.extracters{1,i}); 
+            load(char(S.featureextracterFName{1,i}));
+            this.extracters{1,i}.copy(featureextracter);
         end    
     end
-    function this=CompoundFeatureExtracter(extracters)
-        this.numExtracters=size(extracters,2);
+    function this=CompoundFeatureExtracter(extracters,cachefeatureFName,featureextracterFName)
         this.extracters=extracters;
+        this.numExtracters=size(extracters,2);
+        this.cachefeatureFName=cachefeatureFName;
+        this.featureextracterFName=featureextracterFName;
     end
     function F=extract(this,X)
         F=[];
         for i=1:this.numExtracters
-            F=[F this.extracters{1,i}.extract(X)];
+            cacheFName=char(this.cachefeatureFName{i});
+            if exist(cacheFName,'file')
+                warning('Using cached feature file: %s. Remove it if you have modified the featureextracter.',cacheFName);
+                F=[F dlmread(cacheFName)];
+            else
+               data=this.extracters{1,i}.extract(X);
+               F=[F data];
+               dlmwrite(this.cachefeatureFName{1,i},data);
+            end
         end
     end
     function w=getDimension(this)

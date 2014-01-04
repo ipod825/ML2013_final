@@ -14,7 +14,7 @@ function translate(trainOrTest)
     if(fd<0)
         error('You miss %s, please move it to the current directory.',rawdataFName);
     end
-    h = waitbar(0,'Normalization...');
+    h = waitbar(0,'Translating...');
     for i = 1:n    
         line = fgetl(fd);
         ind=i;
