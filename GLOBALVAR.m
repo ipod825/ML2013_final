@@ -2,7 +2,7 @@
 %In the file you want to add some global variables in this file, write:
 % global height width .... %<- declare global variables you need 
 % GLOBALVAR; %<-initialzie the variables
-global height width   rawdataFName dataFname
+global height width  rawdataFName dataFname
 global fold binThredshold
 global classifierFName
 global n categNum  normSideLength isTraining  featurecached...
@@ -23,7 +23,7 @@ normSideLength=64;
 binThredshold=0.06;
 %% SVM
 gamma=0.01;
-C=20;
+C=40;
 %% PCA
 eigenValThred=50;
 %% CompoundClassifier
@@ -34,24 +34,28 @@ clscompoundProb=[0.1,0.6,0.3,0.2];
 
 
 %isTraining should be set by main program
+datadir='./data/';
+mkdir(datadir);
 if(isTraining)
-    n=6133;        
-    dataFname='./mltrain_sparse.dat';
-    normimgFName='./normimgtrain.dat';
+%     n=6133; 
+    n=9199;
+%     n=12133;
+    dataFname=strcat(datadir,'mltrain_sparse.dat');
+    normimgFName=strcat(datadir,'normimgtrain.dat');
     cachefeatureFName='cachefeaturetrain_';
-    rawdataFName='./ml2013final_train.dat';
+    rawdataFName=strcat(datadir,'ml2013final_train.dat');
 else
     n=3072;
-    dataFname='./mltest_sparse.dat';
-    normimgFName='./normimgtest.dat';
+    dataFname=strcat(datadir,'mltest_sparse.dat');
+    normimgFName=strcat(datadir,'normimgtest.dat');
     cachefeatureFName='cachefeaturetest_';
-    rawdataFName='./test1.dat';
+    rawdataFName=strcat(datadir,'test1.dat');
 end
 
 modeldir='./model/';
 mkdir(modeldir);
 %%
-tmp=4;%change this for FE
+tmp=1;%change this for FE
 fecompoundind=[4,5];
 if(isempty(FE) || FE~=tmp)
     featurecached=false;
