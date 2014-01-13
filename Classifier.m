@@ -46,9 +46,6 @@ methods
             this.train(Y(trainInds,1),X(trainInds,:));
             pred=this.classify(X(testInds,:));
             Eval=Eval+(size(find(Y(testInds)~=pred),1)/size(testInds,1));
-            if(Eval/i>0.6)
-                break;
-            end
         end
         sucRation=1-Eval/fold;
     end

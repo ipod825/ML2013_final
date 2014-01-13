@@ -6,6 +6,8 @@ properties (SetAccess = private)
     winLen=0;
     winNum;
     numFeaturePerWin;
+    freqNum;
+    filters;
 %     pca;
 end
 
@@ -15,8 +17,16 @@ methods
         this.winDim=4;
         this.winLen=this.sideLen/this.winDim;
         this.winNum=this.winDim^2;
-        this.d=this.winNum*4;
+        this.freqNum=4;
+        var=5;
+        this.d=this.winNum*this.freqNum;
+        this.filters=cell(1,this.freqNum);
+        f=pi/2;
+        for i=1:this.freqNum
+            this.filters{1,i}=gaborfilter2(var,var,f,(i-1)*pi/this.freqNum);
+        end
         this.categNum = categNum;
+
 %         this.pca=PcaWrapper(eigenValueSumThred,[]);
     end
     function S = saveobj(this)
@@ -56,22 +66,22 @@ methods
         x=reshape(x,this.sideLen,this.sideLen);
         gaborImgs = this.getGaborImg(x);
         f=[];
-        for i=1:4
+        for i=1:this.freqNum
             df=this.getDensityVector(gaborImgs{1,i});
             f=[f df];
         end
     end
     
     function ret = getGaborImg(this,img)
-        ret=cell(1,4);
-%         img = bwmorph(img>0.07, 'clean');
+        ret=cell(1,this.freqNum);
+%         img = bwmorph(img, 'clean');
 %         img = bwmorph(img, 'majority');
         img = bwmorph(img, 'thin', Inf);
 
         f = pi/2;
-        var = 5;
-        for i=1:4
-            [~,~,~,gaborImg]=gaborfilter2(img,var,var,f,(i-1)*pi/4);
+        for i=1:this.freqNum
+            gaborImg=conv2(double(img),double(real(this.filters{i})),'same');
+            gaborImg=sqrt(gaborImg.*gaborImg);
             ret{1,i}=imresize(gaborImg,[this.sideLen,this.sideLen]);
         end
     end

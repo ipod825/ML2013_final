@@ -5,41 +5,51 @@
 global height width  rawdataFName dataFname
 global fold binThredshold
 global classifierFName
-global n categNum  normSideLength isTraining  featurecached...
+global n categNum  normSideLength tuningByUser isTraining  cachingFeatureOffline featurecached...
        normimgFName cachefeatureFName featureextracterFName 
 global FE CLS Fesuffix fecompoundind Clssuffix clscompoundind...
        compoundCachefeatureFName compoundFeatureextracterFName compoundClassifierFName clscompoundProb
-global gamma C eigenValThred 
+global gamma C eigenValThred
+global KNN_k KNN_p
+
 height = 122;
 width = 105;
-categNum=12;
-
-
-%tunning
-%% CrossValidation
-fold=6;
-%% Normalization
 normSideLength=64;
 binThredshold=0.06;
+categNum=12;
+fold=5; %CrossValidation
+cachingFeatureOffline=true;
+%% Feature & Classifier
+fetmp=4;%change this for FE
+% Fesuffix={'DE';'Eigen';'Weight';'Texture';'Profile';'Compound'};
+CLS=3;
+% Clssuffix={'AMD';'SVM';'KNN';'NaieveBayes';'DecisionTree';'Discriment';'Boost';'Compound'};
+
+%tunning
+if(~tuningByUser || isempty(tuningByUser))
+%% PCA
+eigenValThred=50;
 %% SVM
 gamma=0.01;
 C=40;
-%% PCA
-eigenValThred=50;
+%% KNN
+KNN_k=10;
+KNN_p=5;
+end
+
 %% CompoundClassifier
 clscompoundind=[2,6,6,2];%Clssuffix={'AMD';'SVM';'KNN';'NaieveBayes';'DecisionTree';'Discriment';'Boost';'Compound'};
 auxclscompoundind=[4,4,2,2];%Fesuffix={'DE';'Eigen';'Weight';'Texture';'Profile';'Compound'};
 % clscompoundProb=[0.9,0.87,0.81,0.79];
 clscompoundProb=[0.1,0.6,0.3,0.2];
 
-
 %isTraining should be set by main program
 datadir='./data/';
-mkdir(datadir);
+if ~exist(datadir, 'dir')
+    mkdir(datadir);
+end
 if(isTraining)
-%     n=6133; 
-    n=9199;
-%     n=12133;
+    n=6133; 
     dataFname=strcat(datadir,'mltrain_sparse.dat');
     normimgFName=strcat(datadir,'normimgtrain.dat');
     cachefeatureFName='cachefeaturetrain_';
@@ -53,16 +63,17 @@ else
 end
 
 modeldir='./model/';
-mkdir(modeldir);
+if ~exist(modeldir, 'dir')
+    mkdir(modeldir);
+end
 %%
-tmp=1;%change this for FE
-fecompoundind=[4,5];
-if(isempty(FE) || FE~=tmp)
+fecompoundind=[2,4];
+if(isempty(FE) || FE~=fetmp)
     featurecached=false;
 else
     featurecached=true;
 end
-FE=tmp;
+FE=fetmp;
 
 Fesuffix={'DE';'Eigen';'Weight';'Texture';'Profile';'Compound'};
 fesuffix=Fesuffix{FE};
@@ -79,8 +90,6 @@ featureextracterFName=strcat(modeldir,'featureextarcter_',fesuffix,'.mat');
 
 
 %%
-CLS=2;
-
 Clssuffix={'AMD';'SVM';'KNN';'NaieveBayes';'DecisionTree';'Discriment';'Boost';'Compound'};
 clssuffix=Clssuffix{CLS};
 

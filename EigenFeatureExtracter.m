@@ -31,7 +31,7 @@ classdef EigenFeatureExtracter < FeatureExtracter
             this.eigenVec=eigenVec;
         end
             
-        function F=extract(this,X) %overwrite
+        function F=extract(this,X) %overwrite          
             if(isempty(this.eigenVec))
                 this.mVec=mean(X,1);
                 [this.eigenVec F eigenvalues]= princomp(X);

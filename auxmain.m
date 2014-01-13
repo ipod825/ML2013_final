@@ -1,8 +1,9 @@
-global n categNum  normSideLength isTraining  featurecached...
+global n categNum  normSideLength isTraining  cachingFeatureOffline featurecached...
        normimgFName cachefeatureFName featureextracterFName
 global FE CLS Fesuffix fecompoundind Clssuffix clscompoundind...
        compoundCachefeatureFName compoundFeatureextracterFName compoundClassifierFName clscompoundProb
 global gamma C eigenValThred 
+global KNN_k KNN_p
 GLOBALVAR;  % Some global variables are set depends on the value of isTraining(set in trainmain.m or testmain.m)
 
 if(~exist('Y','var'))   % check if normalized image has been loaded
@@ -31,7 +32,6 @@ if(~isTraining) % for some feature extracter, we save some information at traini
     fe.copy(featureextracter);
 end
 
-cachingFeatureOffline=true;
 if(~exist('F','var') || ~featurecached) 
     if exist(cachefeatureFName,'file')
         warning('Using cached feature file: %s. Remove it if you have modified the featureextracter.',cachefeatureFName);
@@ -55,7 +55,7 @@ clear Cls;
 Cls=cell(1,size(Clssuffix,2));
 Cls{1,1}=AMDClassifier(size(F,2),categNum);
 Cls{1,2}=SVMClassifier(size(F,2),categNum,gamma,C);
-Cls{1,3}=KNNClassifier(size(F,2),categNum);
+Cls{1,3}=KNNClassifier(size(F,2),categNum,KNN_k,KNN_p);
 Cls{1,4}=NaieveBayesClassifier(size(F,2),categNum);
 Cls{1,5}=DecisionTreeClassifier(size(F,2),categNum);
 Cls{1,6}=DiscrimentClassifier(size(F,2),categNum);

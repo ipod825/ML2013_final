@@ -2,11 +2,16 @@ classdef KNNClassifier < Classifier
 properties (SetAccess = private)
     Y;
     F;
+    k;
+    p;
+    
 end
 methods
-    function this=KNNClassifier(d,categNum)
+    function this=KNNClassifier(d,categNum,k,p)
         this.d=d;
         this.categNum=categNum;
+        this.k;
+        this.p=p;
     end
     function train(this,Y,F)
         this.Y=Y;
@@ -16,8 +21,8 @@ methods
         voter=10;
         pred = knnsearch(this.F,F,'k',10,'distance','minkowski','p',5);
 %         pred = knnsearch(this.F,F,'k',10,'distance','mahalanobis');
-%         pred=mode(pred,2);
-        pred=pred(:,1);
+        pred=mode(pred,2);
+%         pred=pred(:,1);
         pred=this.Y(pred);
     end
         function S = saveobj(this)

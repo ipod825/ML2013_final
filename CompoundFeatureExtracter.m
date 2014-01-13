@@ -42,7 +42,7 @@ methods
             else
                data=this.extracters{1,i}.extract(X);
                F=[F data];
-               dlmwrite(this.cachefeatureFName{1,i},data);
+               dlmwrite(char(this.cachefeatureFName{1,i}),data);
             end
         end
     end
